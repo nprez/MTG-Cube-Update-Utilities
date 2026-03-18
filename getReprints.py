@@ -13,7 +13,13 @@ cubeId = sys.argv[1] #"SmallMagic"
 cubeUrl = "https://cubecobra.com/cube/download/csv/" + cubeId
 scryfallUrl = "https://api.scryfall.com/cards/"
 
+scryfallHeaders = {
+    'Accept': '*/*',
+	'User-Agent': 'MTGReprintScript/1.0'
+}
+
 reprints = []
+errors = []
 
 print(cubeUrl)
 
@@ -51,13 +57,17 @@ for row in cr:
 	
 	time.sleep(0.1) #rate limiting for scryfall api
 	
-	with urllib.request.urlopen(cardUrl) as url:
+	cardsReq = urllib.request.Request(cardUrl, headers=scryfallHeaders)
+	
+	with urllib.request.urlopen(cardsReq) as url:
 		response = json.load(url)
 		releaseDate = response["released_at"]
 		printsUrl = response["prints_search_uri"]
 		illustration = response["illustration_id"]
 		
-		with urllib.request.urlopen(printsUrl) as url2:
+		printsReq = urllib.request.Request(printsUrl, headers=scryfallHeaders)
+		
+		with urllib.request.urlopen(printsReq) as url2:
 			response2 = json.load(url2)
 			for printing in response2["data"]:
 				if ignoreDigital and "paper" not in printing["games"]:
@@ -85,7 +95,10 @@ for row in cr:
 					continue
 				if ignoreWhiteBorder and printing["border_color"] == "white":
 					continue
-				if keepSameIllustration and printing["illustration_id"] != illustration:
+				if "illustration_id" not in printing:
+					errors.append(name + " (" + printing["set_name"] + ") no illustration_id data")
+					continue
+				elif keepSameIllustration and printing["illustration_id"] != illustration:
 					continue
 				if "The List" in printing["set_name"]:
 					continue
@@ -97,3 +110,6 @@ for row in cr:
 
 for reprint in reprints:
 	print(reprint)
+	
+for error in errors:
+	print(error)

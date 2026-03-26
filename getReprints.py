@@ -44,7 +44,7 @@ for row in cr:
 		progress = progress + 1
 		print(str(i) + " cards processed...")
 	
-	if len(row) == 0 or row[0] == "name" or row[10] == "TRUE":
+	if len(row) == 0 or row[0] == "name" or row[11] == "TRUE":
 		continue
 	
 	name = row[0]

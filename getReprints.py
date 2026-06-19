@@ -55,7 +55,7 @@ for row in cr:
 	
 	reprintSets = []
 	
-	time.sleep(0.1) #rate limiting for scryfall api
+	time.sleep(0.2) #rate limiting for scryfall api
 	
 	cardsReq = urllib.request.Request(cardUrl, headers=scryfallHeaders)
 	

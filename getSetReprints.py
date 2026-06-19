@@ -38,6 +38,7 @@ while readScryfallPages:
 		if readScryfallPages:
 			scryfallUrl = response["next_page"]
 			scryfallReq = urllib.request.Request(scryfallUrl, headers=scryfallHeaders)
+	time.sleep(0.1) #rate limiting for scryfall api
 
 print(str(len(setCards)) + " cards")
 

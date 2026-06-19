@@ -1,5 +1,7 @@
 import urllib.request, json, sys
 
+scryfallDelay = 0.2
+
 cubeId = sys.argv[1] #"SmallMagic"
 cubeUrl = "https://cubecobra.com/cube/download/plaintext/" + cubeId
 
@@ -30,6 +32,7 @@ readScryfallPages = True
 scryfallReq = urllib.request.Request(scryfallUrl, headers=scryfallHeaders)
 
 while readScryfallPages:
+	time.sleep(scryfallDelay) #rate limiting for scryfall api
 	with urllib.request.urlopen(scryfallReq) as url:
 		response = json.load(url)
 		for card in response["data"]:
@@ -38,7 +41,6 @@ while readScryfallPages:
 		if readScryfallPages:
 			scryfallUrl = response["next_page"]
 			scryfallReq = urllib.request.Request(scryfallUrl, headers=scryfallHeaders)
-	time.sleep(0.2) #rate limiting for scryfall api
 
 print(str(len(setCards)) + " cards")
 

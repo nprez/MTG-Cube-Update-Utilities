@@ -9,6 +9,8 @@ ignoreUniversesBeyond = True
 ignoreWhiteBorder = True
 keepSameIllustration = True
 
+scryfallDelay = 0.2
+
 cubeId = sys.argv[1] #"SmallMagic"
 cubeUrl = "https://cubecobra.com/cube/download/csv/" + cubeId
 scryfallUrl = "https://api.scryfall.com/cards/"
@@ -55,7 +57,7 @@ for row in cr:
 	
 	reprintSets = []
 	
-	time.sleep(0.2) #rate limiting for scryfall api
+	time.sleep(scryfallDelay) #rate limiting for scryfall api
 	
 	cardsReq = urllib.request.Request(cardUrl, headers=scryfallHeaders)
 	
@@ -64,6 +66,8 @@ for row in cr:
 		releaseDate = response["released_at"]
 		printsUrl = response["prints_search_uri"]
 		illustration = response["illustration_id"]
+		
+		time.sleep(scryfallDelay) #rate limiting for scryfall api
 		
 		printsReq = urllib.request.Request(printsUrl, headers=scryfallHeaders)
 		

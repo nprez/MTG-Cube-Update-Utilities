@@ -1,5 +1,6 @@
 import urllib.request, json, csv, sys, time
 
+ignoreMaybeBoard = True
 ignoreDigital = True
 ignorePromos = True
 ignoreMasterpieces = True
@@ -9,7 +10,7 @@ ignoreUniversesBeyond = True
 ignoreWhiteBorder = True
 keepSameIllustration = True
 
-scryfallDelay = 0.2
+scryfallLongerDelay = 0.5
 
 cubeId = sys.argv[1] #"SmallMagic"
 cubeUrl = "https://cubecobra.com/cube/download/csv/" + cubeId
@@ -28,7 +29,8 @@ print(cubeUrl)
 #name = 0
 #Set = 4
 #Collector Number = 5
-#maybeboard = 10
+#board = 10
+#maybeboard = 11
 
 text = urllib.request.urlopen(cubeUrl).read().decode('utf-8').split("\n")
 
@@ -46,7 +48,9 @@ for row in cr:
 		progress = progress + 1
 		print(str(i) + " cards processed...")
 	
-	if len(row) == 0 or row[0] == "name" or row[11] == "TRUE" or row[10] == "basics":
+	if len(row) == 0 or row[0] == "name" or row[10] == "basics":
+		continue
+	if(ignoreMaybeBoard and row[11] == "TRUE"):
 		continue
 	
 	name = row[0]
@@ -57,7 +61,7 @@ for row in cr:
 	
 	reprintSets = []
 	
-	time.sleep(scryfallDelay) #rate limiting for scryfall api
+	time.sleep(scryfallLongerDelay) #rate limiting for scryfall api
 	
 	cardsReq = urllib.request.Request(cardUrl, headers=scryfallHeaders)
 	
@@ -66,8 +70,6 @@ for row in cr:
 		releaseDate = response["released_at"]
 		printsUrl = response["prints_search_uri"]
 		illustration = response["illustration_id"]
-		
-		time.sleep(scryfallDelay) #rate limiting for scryfall api
 		
 		printsReq = urllib.request.Request(printsUrl, headers=scryfallHeaders)
 		

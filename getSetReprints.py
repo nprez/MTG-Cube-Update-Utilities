@@ -1,6 +1,6 @@
 import urllib.request, json, sys
 
-scryfallDelay = 0.2
+scryfallDelay = 0.5
 
 cubeId = sys.argv[1] #"SmallMagic"
 cubeUrl = "https://cubecobra.com/cube/download/plaintext/" + cubeId

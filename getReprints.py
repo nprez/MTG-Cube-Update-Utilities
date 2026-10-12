@@ -16,7 +16,7 @@ cubeId = sys.argv[1] #"SmallMagic"
 cubeUrl = "https://cubecobra.com/cube/download/csv/" + cubeId
 scryfallUrl = "https://api.scryfall.com/cards/"
 
-scryfallHeaders = {
+headers = {
     'Accept': '*/*',
 	'User-Agent': 'MTGReprintScript/1.0'
 }
@@ -32,7 +32,8 @@ print(cubeUrl)
 #board = 10
 #maybeboard = 11
 
-text = urllib.request.urlopen(cubeUrl).read().decode('utf-8').split("\n")
+cubeReq = urllib.request.Request(cubeUrl, headers=headers)
+text = urllib.request.urlopen(cubeReq).read().decode('utf-8').split("\n")
 
 cardCount = sum(1 for row in csv.reader(text)) - 2 #ignore header and empty line
 print(str(cardCount) + " total cards")
@@ -63,7 +64,7 @@ for row in cr:
 	
 	time.sleep(scryfallLongerDelay) #rate limiting for scryfall api
 	
-	cardsReq = urllib.request.Request(cardUrl, headers=scryfallHeaders)
+	cardsReq = urllib.request.Request(cardUrl, headers=headers)
 	
 	with urllib.request.urlopen(cardsReq) as url:
 		response = json.load(url)
@@ -71,7 +72,7 @@ for row in cr:
 		printsUrl = response["prints_search_uri"]
 		illustration = response["illustration_id"]
 		
-		printsReq = urllib.request.Request(printsUrl, headers=scryfallHeaders)
+		printsReq = urllib.request.Request(printsUrl, headers=headers)
 		
 		with urllib.request.urlopen(printsReq) as url2:
 			response2 = json.load(url2)

@@ -9,7 +9,14 @@ cubeCards = []
 
 print(cubeUrl)
 
-for line in urllib.request.urlopen(cubeUrl):
+headers = {
+    'Accept': '*/*',
+	'User-Agent': 'MTGReprintScript/1.0'
+}
+
+cubeCobraReq = urllib.request.Request(cubeUrl, headers=headers)
+
+for line in urllib.request.urlopen(cubeCobraReq):
 	card = line.decode('utf-8').replace('\r', '').replace('\n', '')
 	if len(card) > 0 and card[0] != '#':
 		cubeCards.append(card)
@@ -18,10 +25,7 @@ print(str(len(cubeCards)) + " cards")
 
 setId = sys.argv[2] # "m20"
 scryfallUrl = "https://api.scryfall.com/cards/search?q=set%3A" + setId
-scryfallHeaders = {
-    'Accept': '*/*',
-	'User-Agent': 'MTGReprintScript/1.0'
-}
+
 
 setCards = []
 
@@ -29,7 +33,7 @@ print(scryfallUrl)
 
 readScryfallPages = True
 
-scryfallReq = urllib.request.Request(scryfallUrl, headers=scryfallHeaders)
+scryfallReq = urllib.request.Request(scryfallUrl, headers=headers)
 
 while readScryfallPages:
 	time.sleep(scryfallDelay) #rate limiting for scryfall api
@@ -40,7 +44,7 @@ while readScryfallPages:
 		readScryfallPages = response["has_more"]
 		if readScryfallPages:
 			scryfallUrl = response["next_page"]
-			scryfallReq = urllib.request.Request(scryfallUrl, headers=scryfallHeaders)
+			scryfallReq = urllib.request.Request(scryfallUrl, headers=headers)
 
 print(str(len(setCards)) + " cards")
 
